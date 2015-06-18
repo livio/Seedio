@@ -1,0 +1,16 @@
+# NPM modules
+node_modules
+
+# NPM debug log
+npm-debug.log
+
+# Webstorm files
+.idea
+
+# Mac OS files
+.DS_Store
+
+# Files with secret information
+development.js
+production.js
+local.js

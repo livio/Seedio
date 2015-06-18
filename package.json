@@ -1,0 +1,63 @@
+{
+  "author": "Livio",
+  "bugs": {
+    "url": "https://github.com/livio/seedioissues"
+  },
+  "devDependencies": {
+    "codecov.io": "0.0.8",
+    "istanbul": "^0.3.5",
+    "mocha": "^2.1.0",
+    "should": "^4.6.5",
+    "supertest": "^0.15.0"
+  },
+  "dependencies": {
+    "seedio-recaptcha": "git://github.com/livio/Seedio-reCAPTCHA.git",
+    "seedio-response": "git://github.com/livio/Seedio-response.git",
+    "aglio": "^1.18.0",
+    "async": "^0.9.0",
+    "body-parser": "^1.9.2",
+    "bower": "^1.3.12",
+    "compression": "^1.4.1",
+    "connect-ensure-login": "^0.1.1",
+    "connect-mongo": "^0.8.0",
+    "crave": "git+https://github.com/ssmereka/crave.git#HEAD",
+    "crucial": "git+https://github.com/ssmereka/crucial.git#HEAD",
+    "email-templates": "^1.2.1",
+    "express": "^4.10.1",
+    "express-session": "^1.10.2",
+    "i18next": "^1.7.9",
+    "lodash": "^2.4.1",
+    "mongoose": "3.8.x",
+    "node-uuid": "^1.4.2",
+    "nodemailer": "^1.3.2",
+    "oauth2orize": "^1.0.1",
+    "passport": "^0.2.1",
+    "passport-http": "^0.2.2",
+    "passport-http-bearer": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "passport-oauth2-client-password": "^0.1.2",
+    "request": "^2.53.0",
+    "seedio-log": "git://github.com/livio/Seedio-log.git"
+  },
+  "description": "A generic seed for creating a Node.js Website with an API",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "homepage": "",
+  "keywords": [
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "Seedio",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/livio/seedio"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha",
+    "postinstall": "./node_modules/bower/bin/bower install"
+  },
+  "version": "0.0.1"
+}
