@@ -96,7 +96,7 @@ var Config = function() {
     name: "SHAID",              // Name of the server
     port: 3000,                 // Port the server will be listening on.
     trace: false,                // When true, trace messages will be logged.
-    requests: false,            // When true, requests messages will be logged.
+    requests: true,            // When true, requests messages will be logged.
     url: 'https://localhost:3000/'
   };
 

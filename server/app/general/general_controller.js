@@ -1,9 +1,7 @@
 module.exports = function(app, config, log, policy) {
 
-  var db = require('mongoose'),
-      express = require('express'),
+  var express = require('express'),
       fs = require('fs'),
-      Log = db.model('Log'),
       path = require('path');
 
   var packageJsonPath = path.resolve('./package.json');
