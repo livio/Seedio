@@ -95,8 +95,9 @@ var Config = function() {
     debug: false,               // When true, debug messages will be logged.
     name: "SHAID",              // Name of the server
     port: 3000,                 // Port the server will be listening on.
-    trace: false,                // When true, trace messages will be logged.
-    requests: true,            // When true, requests messages will be logged.
+    trace: false,               // When true, trace messages will be logged.
+    requests: true,             // When true, requests messages will be logged.
+    databaseLog: true,          // When true, logs will be persisted to the Mongo database.
     url: 'https://localhost:3000/'
   };
 
