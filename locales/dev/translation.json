@@ -1,0 +1,45 @@
+{
+  "server": {
+    "user": {
+      "passwordResetEmailSent": "An email with password reset instructions has been sent.",
+      "defaultSecurityQuestion": "Who is your favorite fictional character?",
+      "unknown": "Unknown"
+    },
+    "error": {
+      "accessAlreadyRequested": "Access has already been requested.",
+      "accessAlreadyGranted": "User already has access.",
+      "badRequest": "Bad request, correct any incorrect information and try again.",
+      "badRecaptchaToken": "Invalid or missing recaptcha token.",
+      "deactivated": "Your account has been deactivated.  Please email shaid@smartdevicelink.org to request your account be reactivated.",
+      "duplicateUsername": "Username already exists.",
+      "duplicateEmail": "Email already exists.",
+      "permissionDeniedPurgeUser": "You do not have permission to purge the specified user account.",
+      "forbiddenAttribute": "Forbidden, you do not have permission to modify one or more attributes in your request.",
+      "forbidden": "Forbidden, you do not have permission to access this data.",
+      "generic": "Unknown internal server error.",
+      "invalidEmail": "Invalid email.",
+      "invalidEmailTooDamnLong": "Email is TOO DAMN LONG!",
+      "invalidEmailHasSpaces": "Emails cannot contain spaces.",
+      "invalidObjectId": "Invalid Object ID value.",
+      "invalidRecaptcha": "Invalid recaptcha.",
+      "invalidUserId": "Invalid user ID value.",
+      "invalidUsername": "Invalid username.",
+      "invalidUsernameEmailAddress": "Username cannot be an email address.",
+      "invalidUsernameHasSpaces": "Usernames cannot contain spaces.",
+      "invalidUsernameTooDamnLong": "Username is TOO DAMN LONG!",
+      "invalidPassword": "Invalid password.",
+      "invalidSecurityAnswer": "Invalid security answer.",
+      "invalidUsernameOrPassword": "Invalid username or password",
+      "notificationUrlUndefined": "Cannot send notification because the SDL server is not setup to receive notifications.",
+      "notificationSdlServerUserUndefined": "Cannot send notification because the SDL server is currently an orphan, it is not owned by a user.",
+      "notFound": "No resource(s) found at this location.",
+      "sdlServerForbidden": "Request to SDL server was forbidden, try a more permissive access token.",
+      "sdlServerInvalidAccessToken": "The 3rd party SDL Server rejected the access token.",
+      "sdlServerUrlMustUseSsl": "The URL must begin with 'https://'",
+      "sdlServerInvalidUrl": "URL is invalid, make sure it contains 'https://'.",
+      "sdlServerInvalidOrUnreachable": "The 3rd party SDL server is currently unreachable or the URL is invalid.",
+      "unauthorized": "Unauthorized, you require authentication to access this data.",
+      "unknownResource": "One or more of the specified resource(s) are invalid or unknown."
+    }
+  }
+}

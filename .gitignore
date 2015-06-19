@@ -13,4 +13,4 @@ npm-debug.log
 # Files with secret information
 development.js
 production.js
-local.js
+server/config/local.js
