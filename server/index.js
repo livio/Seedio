@@ -95,10 +95,16 @@ var start = function(err) {
     });
 
     // Final middleware to format standard responses.
-    app.use(responseHandler.responseHandler);
+    app.use(responseHandler.responseHandler(function(req, res, next) {
+      // TODO: Add any logic needed to handle a view not being found.
+      next();
+    }));
 
     // Final middleware to format any error responses.
-    app.use(responseHandler.errorHandler);
+    app.use(responseHandler.errorHandler(function(err, req, res, next) {
+      // TODO: Add any logic needed to render error views.
+      next();
+    }));
 
     var server = app.listen(config.server.port, function() {
       var serverInfo = this.address();
