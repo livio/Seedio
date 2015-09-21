@@ -1,23 +1,46 @@
 {
   "server": {
     "user": {
+      "alreadyDeactivated": "User is already deactivated.",
+      "alreadyActivated": "User is already activated.",
+      "deactivated": "Your account has been deactivated.",
+      "default": {
+        "deactivatedMessage": "Your account has been deactivated.",
+        "securityQuestion": "What is your favorite color"
+      },
+      "invalidEmail": "Invalid email.",
+      "invalidEmailOrId": "Invalid user ID or email address.",
+      "invalidInput": "Invalid input.",
+      "invalidPassword": "Invalid password.",
+      "invalidUsername": "Invalid username",
       "passwordResetEmailSent": "An email with password reset instructions has been sent.",
+      "passwordMustBeString": "A password must be a valid string of characters.",
+      "passwordTooLong": "The password entered is too long.",
+      "passwordTooShort": "The password entered is too short.",
+      "securityAnswerMustBeString": "A security question answer must be a valid string of characters.",
+      "securityAnswerTooLong": "The security question answer entered is too long",
+      "securityAnswerTooShort": "The security question answer entered is too short",
       "defaultSecurityQuestion": "Who is your favorite fictional character?",
-      "unknown": "Unknown"
+      "tooManyFailedLoginAttempts": "Your account has been deactivated due to too many failed login attempts.",
+      "tooManyFailedPasswordAttempts": "Your account has been deactivated due to too many failed password attempts.",
+      "tooManyFailedPasswordResetAttempts": "Your account has been deactivated due to too many failed password reset attempts.",
+      "tooManyFailedSecurityAnswers": "Your account has been deactivated due to too many failed security answer attempts.",
+      "unknown": "Unknown",
+      "updateDidNotReturnUser": "The update user method did not return an error or a user object."
     },
     "error": {
       "accessAlreadyRequested": "Access has already been requested.",
       "accessAlreadyGranted": "User already has access.",
       "badRequest": "Bad request, correct any incorrect information and try again.",
       "badRecaptchaToken": "Invalid or missing recaptcha token.",
-      "deactivated": "Your account has been deactivated.  Please email shaid@smartdevicelink.org to request your account be reactivated.",
+
       "duplicateUsername": "Username already exists.",
       "duplicateEmail": "Email already exists.",
       "permissionDeniedPurgeUser": "You do not have permission to purge the specified user account.",
       "forbiddenAttribute": "Forbidden, you do not have permission to modify one or more attributes in your request.",
       "forbidden": "Forbidden, you do not have permission to access this data.",
       "generic": "Unknown internal server error.",
-      "invalidEmail": "Invalid email.",
+
       "invalidEmailTooDamnLong": "Email is TOO DAMN LONG!",
       "invalidEmailHasSpaces": "Emails cannot contain spaces.",
       "invalidObjectId": "Invalid Object ID value.",
