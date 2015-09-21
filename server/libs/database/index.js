@@ -40,6 +40,7 @@ var initializeDatabase = function(db, cb) {
 };
 
 var initializeUserRoles = function(db, dm, cb) {
+  return cb()
   var userRoleData = require(path.resolve('./app/users/userRole_data'))(undefined, config, log, dm);
   var UserRole = db.model('UserRole');
 
@@ -72,6 +73,7 @@ var initializeUserRoles = function(db, dm, cb) {
 };
 
 var initializeAdminUser = function(db, dm, cb) {
+  return cb();
   var User = db.model('User');
   var UserRole = db.model('UserRole');
 

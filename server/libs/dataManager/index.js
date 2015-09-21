@@ -11,6 +11,7 @@ var app,
     log,
     mocha;
 
+var FixtureAdapter = require('./fixtureAdapter.js');
 
 /* ************************************************************ *
  * ******************** Constructor
@@ -459,6 +460,8 @@ DataManager.prototype.validateForbiddenObject = validateForbiddenObject;
 DataManager.prototype.validateErrorObject = validateErrorObject;
 DataManager.prototype.validateNotFoundObject = validateNotFoundObject;
 DataManager.prototype.validateBadRequestObject = validateBadRequestObject;
+
+DataManager.prototype.FixtureAdapter = FixtureAdapter;
 
 exports = module.exports = DataManager;
 exports = DataManager;

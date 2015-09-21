@@ -11,9 +11,9 @@ var config = require("./config/"),
 
 var log = new (require('seedio-log'))({
       mongoose: mongoose,
-      debug: config.server.debug,
-      trace: config.server.trace,
-      error: config.server.error,
+      debug: config.log.debug,
+      trace: config.log.trace,
+      error: config.log.error,
       name: config.server.name,
       databaseLog: config.server.databaseLog}),
     database = new (require('./libs/database/'))(config, log),
@@ -125,4 +125,4 @@ var start = function(err) {
 crave.setConfig(config.crave);
 
 // Recursively load all files of the specified type(s) that are also located in the specified folder.
-crave.directory(path.resolve("./app"), [ "model", "authentication", "controller" ], start, app, config, log, oauth2);
+crave.directory(path.resolve("./app"), [ "model", "api", "controller2" ], start, app, config, log, oauth2);

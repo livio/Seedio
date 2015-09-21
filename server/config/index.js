@@ -1,22 +1,49 @@
+/**
+ * The configuration object stores default settings and methods
+ * used to govern the application.
+ */
+
+
+/* ************************************************** *
+ * ******************** Global Variables
+ * ************************************************** */
+
 var path = require('path');
+
+
+/* ************************************************** *
+ * ******************** Configuration Object
+ * ************************************************** */
 
 var Config = function() {
 
   // Information about the administrator of the server.
   this.admin = {
-    // Email address used for notifications.
-    email: ""
+    email: ""                   // Email address used for notifications.
   };
 
-  // Settings for the server's database connection.
-  this.database = {
-    initializeOnConnect: true,
-    uri: "mongodb://localhost:27017/seedio_local"  // URI used to connect to the Mongo DB datastore.
+  this.models = {
+    user: {
+      failedSecurityAttempts: {
+        deactivate: 10,           // Number of failed attempts until the user account is deactivated.
+        recaptchaRequired: 5      // Number of failed attempts until a ReCAPTCHA is required for security requests.
+      },
+      password: {
+        changeRequiresCurrentPassword: false, // Whether or not the current user's password is required to set a new password.
+        maxLength: 100,
+        minLength: 4,
+        resetTokenExpiration: 5
+      },
+      securityAnswer: {
+        maxLength: 100,
+        minLength: 1
+      }
+    }
   };
 
-  // Crave is a module used to find and require files dynamically.
+  // Crave is a module used to find and require files dynamically:  https://github.com/ssmereka/crave
   this.crave = {
-    cache: {
+    cache: {                    // Crave can store the list of files to load rather than create it each time.
       enable: false             // Disable caching of the list of files to load.  In production this should be enabled.
     },
     identification: {           // Variables related to how to find and require files are stored here.
@@ -25,12 +52,18 @@ var Config = function() {
     }
   };
 
+  // Balance how security and server performance by tweaking the following settings.
   this.crypto = {
-    // Choose iterations to satisfy the formula v-2^(n-1) > f-p  source:  http://goo.gl/tPVs1M
-    iterations: 10000,
-    keySize: 64,
-    plainTextSize: 24,
-    saltSize: 64
+    iterations: 10000,          // Choose iterations to satisfy the formula v-2^(n-1) > f-p  source:  http://goo.gl/tPVs1M
+    keySize: 64,                //
+    plainTextSize: 24,          //
+    saltSize: 64                // Size of the salt used when encrypting strings.
+  };
+
+  // Settings for the server's database connection.
+  this.database = {
+    initializeOnConnect: true,
+    uri: "mongodb://localhost:27017/seedio_local"  // URI used to connect to the Mongo DB datastore.
   };
 
   this.docs = {
@@ -40,29 +73,29 @@ var Config = function() {
     apiDocsLocalesFolder: '/client/apidocs/locales'
   };
 
+  // Configure how emails are sent from the server.
   this.email = {
-    enabled: true,
-    from: 'SHAID@SmartDeviceLink.org',
-    // SMTP settings for email sent from this server.
-    smtp: {
-      "host": "smtp.mandrillapp.com",
-      "port": 587,
-      "auth": {
-        "user": '',
-        "pass": ''
+    enabled: true,              // Disable to stop all emails from actually being sent.
+    from: 'me@domain.com',      // Default from email address for all email.
+    smtp: {                     // SMTP settings for email sent from this server.
+      "host": "smtp.mandrillapp.com",   // Host name of the SMTP server.  Mandrill by MailChimp is a great alternative to hosting your own.
+      "port": 587,              // SMTP server's port.
+      "auth": {                 // Authentication used by the SMTP server.
+        "user": '',             // Username.
+        "pass": ''              // Password.
       }
     },
-    templatesDirectory: path.resolve('../client/emailTemplates')
+    templatesDirectory: path.resolve('../client/emailTemplates')  // Directory where email templates are stored.
   };
 
-  // Configure express settings
+  // Configure the Express framework:  http://expressjs.com/
   this.express = {
     static : {
-      maxAge: 0 // Set the max-age property for Cache-Control header (in ms). In production this needs to greater than zero toleverage browser caching
+      maxAge: 0 // Set the max-age property for Cache-Control header (in ms). In production this needs to greater than zero to leverage browser caching
     }
   };
 
-  // Configure i18n library
+  // Configure i18n library used for language translation:  http://i18next.com/
   this.i18n = {
     debug: false,                                 // Adds a bunch of debug text for i18next. Good to show if you are not sure why translations are failing.
     resGetPath: '../locales/__lng__/__ns__.json', // Point to the translation files.
@@ -70,43 +103,41 @@ var Config = function() {
     fallbackLng: 'dev'
   };
 
-  // Configure the reCAPTCHA to protect against bots.
+  this.log = {
+    error: true,
+    debug: false,
+    requests: false,
+    trace: false
+  };
+
+  // Google's ReCAPTCHA  -- https://www.google.com/recaptcha/intro/index.html
   this.recaptcha = {
-    clientKey: "0000000000000000000000000000000000000000",
-    clientUrl: "https://www.google.com/recaptcha/api.js",
-    enabled: true,
-    serverKey: "1000000000000000000000000000000000000000",
-    serverUrl: "https://www.google.com/recaptcha/api/siteverify"
+    clientKey: "0000000000000000000000000000000000000000",        // Client key assigned to you by the reCAPTCHA API.
+    clientUrl: "https://www.google.com/recaptcha/api.js",         // Client reCAPTCHA endpoint.
+    enabled: true,                                                // When false, disables checking of reCAPTCHA.
+    serverKey: "1000000000000000000000000000000000000000",        // Server key assigned to you by the reCAPTCHA API.
+    serverUrl: "https://www.google.com/recaptcha/api/siteverify"  // Server reCAPTCHA endpoint.
   };
 
-  // User role index values for quick reference when performing authentication.
-  this.roles = {
-    admin: 0,                   // Admin role index, should be the lowest value.
-    oem: 1,                     // OEM role index, should allow access to SDL servers.
-    developer: 2                // Developer role index, should allow access to Applications.
-  };
-
-  // Resolves to the path of the root directory.
-  this.rootDirectory = path.resolve(path.dirname(require.main.filename), '..');
+  // Resolves to the path of the application's root directory.
+  //this.rootDirectory = path.resolve(path.dirname(require.main.filename), '..');
+  this.rootDirectory = path.resolve(__dirname, "../../");
 
   // Settings for the Node server.
   this.server = {
-    error: true,                // When true, error messages will be logged.
-    debug: false,               // When true, debug messages will be logged.
+    debug: false,               // Indicates the server is in debug mode and may perform unusual actions to assist the developer.
+    domain: 'myDomainName.com', // Server's domain name.
     name: "SHAID",              // Name of the server
     port: 3000,                 // Port the server will be listening on.
-    trace: false,               // When true, trace messages will be logged.
-    requests: true,             // When true, requests messages will be logged.
-    databaseLog: true,          // When true, logs will be persisted to the Mongo database.
-    url: 'https://localhost:3000/'
+    protocol: 'https'           // Default protocol used to communicate with the server.
   };
 
   // Configure express session options.
   this.session = {
-    name: 'seedio.sid',          // Name of the server in the express session.
+    name: 'seedio.sid',         // Name of the server in the express session.
     secret: 'You will arrive at the gates of Valhalla, shiny and chrome!',
     resave: true,
-    proxy: false,           // Should be true in production when secured behind NGINX and over HTTPS
+    proxy: false,               // Should be true in production when secured behind NGINX and over HTTPS
     saveUninitialized: true,
     cookie: {
       maxAge: 604800000,    // 1 week (in ms)
@@ -115,44 +146,30 @@ var Config = function() {
     }
   };
 
-  this.authentication = {
-    failedLoginAttempts: {
-      deactivate: 10,
-      recaptchaRequired: 5
+  this.models = {
+    user: {
+      usernameMaxLength: 600
     }
   };
 
-  switch(process.env.NODE_ENV) {
-    case "test":
-      loadConfigFile(this, './test.js');
-      break;
-
-    case "dev":
-    case "development":
-      loadConfigFile(this, './development.js');
-      break;
-
-    case "pro":
-    case "production":
-      loadConfigFile(this, './production.js');
-      break;
-
-    default:
-    case 'local':
-      loadConfigFile(this, './local.js', true);
-      break;
-  }
-};
-
-var loadConfigFile = function(c, file, hideErrors) {
+  // Override configurations by loading the configuration file that
+  // matches the name of the node environment specified.  If an
+  // environment is not specified, Default to local.
+  var file = (process.env.NODE_ENV) ? process.env.NODE_ENV : "local.js";
   try {
-    (require(file))(c);
+    (require(__dirname + "/" + file))(this);
   } catch(err) {
-    if(hideErrors) {
-      console.log("Could not load the config file: " + file);
-      console.log(err);
-    }
+    console.log("Could not load the specified configuration file: %s/%s", __dirname, file);
+    console.log(err);
   }
+
+  // Set the server's URL parameter, based on the previously configured settings.
+  this.server.url = (this.server.port == 80) ? this.server.protocol + "://" + this.server.domain : this.server.protocol + "://" + this.server.domain + ":" + this.server.port;
+
+  this.log.debug = this.server.debug;
+
+  this.libsDirectory = path.normalize(this.rootDirectory+'/server/libs/') ;
+
 };
 
 

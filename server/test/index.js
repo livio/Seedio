@@ -22,6 +22,7 @@ crave.setConfig({
   }
 });
 
+console.log(config);
 
 describe('Seedio', function() {
 
