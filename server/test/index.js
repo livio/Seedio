@@ -43,7 +43,7 @@ describe('Seedio', function() {
     };
 
     // Recursively load all data files that are located in the apps folder.
-    crave.directory(applicationPath, ["data"], formatData, supertest, config, log, dm);
+    crave.directory(applicationPath, ["fixture"], formatData, supertest, config, log, dm);
   });
 
   it('load all tests', function(done) {
