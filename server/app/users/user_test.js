@@ -28,7 +28,7 @@ module.exports = function(app, config, log, data, dm) {
      * ************************************************** */
 
     before(function(done) {
-      console.log(data);
+      //console.log(data['User'].getAll());
       done();
     });
 

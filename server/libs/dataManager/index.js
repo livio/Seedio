@@ -399,6 +399,11 @@ function dropAllCollections(cb) {
   });
 }
 
+var inherit = function(proto) {
+  function F() {}
+  F.prototype = proto;
+  return new F;
+};
 
 /* ************************************************************ *
  * ******************** Public API
@@ -462,6 +467,7 @@ DataManager.prototype.validateNotFoundObject = validateNotFoundObject;
 DataManager.prototype.validateBadRequestObject = validateBadRequestObject;
 
 DataManager.prototype.FixtureAdapter = FixtureAdapter;
+DataManager.prototype.inherit = inherit;
 
 exports = module.exports = DataManager;
 exports = DataManager;

@@ -22,8 +22,6 @@ crave.setConfig({
   }
 });
 
-console.log(config);
-
 describe('Seedio', function() {
 
   // Load the test data object that will be passed into each test file.

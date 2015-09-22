@@ -1,7 +1,7 @@
 var _;
 
 var FixtureAdapter = function(name, dm, config, log) {
-  this.name = "";
+  this.name = name;
   this.dm = dm;
   this.config = config;
   this.log = log;

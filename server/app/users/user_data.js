@@ -1,11 +1,10 @@
 module.exports = function(app, config, log, dm) {
 
   function UserFixture() {
-    FixtureAdapter.call(this, 'User', dm, config, log);
+    dm.FixtureAdapter.call(this, 'User', dm, config, log);
   }
 
-  UserFixture.prototype = new dm.FixtureAdapter();
-  UserFixture.prototype.constructor = UserFixture;
+  UserFixture.prototype = dm.inherit(dm.FixtureAdapter.prototype);
 
   UserFixture.prototype.getNew = function() {
     var now = Date.now();
@@ -182,4 +181,5 @@ module.exports = function(app, config, log, dm) {
     ];
   };
 
+  return new UserFixture();
 };
