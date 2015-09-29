@@ -52,14 +52,6 @@ var Config = function() {
     }
   };
 
-  // Balance how security and server performance by tweaking the following settings.
-  this.crypto = {
-    iterations: 10000,          // Choose iterations to satisfy the formula v-2^(n-1) > f-p  source:  http://goo.gl/tPVs1M
-    keySize: 64,                //
-    plainTextSize: 24,          //
-    saltSize: 64                // Size of the salt used when encrypting strings.
-  };
-
   // Settings for the server's database connection.
   this.database = {
     initializeOnConnect: true,
@@ -122,6 +114,16 @@ var Config = function() {
   // Resolves to the path of the application's root directory.
   //this.rootDirectory = path.resolve(path.dirname(require.main.filename), '..');
   this.rootDirectory = path.resolve(__dirname, "../../");
+
+  // Safeguard library settings https://goo.gl/kYg9Nv
+  this.safeguard = {
+    crypto: {                   // Balance security and server performance by tweaking the following settings.
+      iterations: 10000,        // Choose iterations to satisfy the formula v-2^(n-1) > f-p  source:  http://goo.gl/tPVs1M
+      keyLength: 64,            // Length of the text's hash value.
+      plainTextLength: 24,      // When defined and an invalid string is hashed using the hasher, a random string of the specified size will be generated.
+      saltLength: 64            // Size of the salt used when encrypting strings.
+    }
+  };
 
   // Settings for the Node server.
   this.server = {

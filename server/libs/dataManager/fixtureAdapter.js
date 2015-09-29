@@ -2,18 +2,21 @@ var _;
 
 var FixtureAdapter = function(name, dm, config, log) {
   this.name = name;
-  this.dm = dm;
+  this.db = dm.databaseAdapter;
   this.config = config;
   this.log = log;
-  _ = require("lodash");
+
+  if( ! _) {
+    _ = require("lodash");
+  }
 };
 
 FixtureAdapter.prototype.insertAll = function(cb) {
-  this.dm.addItems(this.name, this.getAll(), cb);
+  this.db.add(this.getAll(), this.name, cb);
 };
 
 FixtureAdapter.prototype.deleteAll = function(cb) {
-  this.dm.removeItems(this.name, this.getAllAndNew(), cb);
+  this.db.remove(this.getAllAndNew(), this.name, cb);
 };
 
 FixtureAdapter.prototype.findById = function(id, cb) {

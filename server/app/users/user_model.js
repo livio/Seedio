@@ -20,7 +20,7 @@ module.exports = function(app, config, log) {
       error = require(config.libsDirectory + 'error'),
       i18n = require('i18next'),
       path = require('path'),
-      security = require(config.libsDirectory + 'Security')(config, log),
+      safeguard = require('safeguard')(config.safeguard, log, error),
       uuid = require('node-uuid'),
       validator = require('validator'),
       _ = require('lodash');
@@ -365,7 +365,7 @@ module.exports = function(app, config, log) {
 
     // Check if the user entered the correct password.
     } else {
-      security.compareToHash(password, user.passwordHash, function(err, isAuthenticated) {
+      safeguard.compareToHash(password, user.passwordHash, function(err, isAuthenticated) {
         if(err) {
           cb(err);
         } else if( ! isAuthenticated) {
@@ -576,7 +576,7 @@ module.exports = function(app, config, log) {
   User.methods.verifyPassword = function(password, cb) {
     var user = this;
 
-    security.compareToHash(password, user.passwordHash, function(err, isValid) {
+    safeguard.compareToHash(password, user.passwordHash, function(err, isValid) {
       if(err) {
         cb(err);
       } else if( ! isValid) {
@@ -607,7 +607,7 @@ module.exports = function(app, config, log) {
       // Security answers are not case sensitive and do not include extraneous spaces.
       securityAnswer = securityAnswer.toLowerCase().trim();
 
-      security.compareToHash(securityAnswer, user.securityAnswerHash, function(err, isAuthenticated) {
+      safeguard.compareToHash(securityAnswer, user.securityAnswerHash, function(err, isAuthenticated) {
         if(err) {
           cb(err, user);
         } else if( ! isAuthenticated) {
@@ -634,7 +634,7 @@ module.exports = function(app, config, log) {
     if( ! passwordReset || ! _.isString(passwordReset)) {
       user.handleFailedPasswordResetAttempt(cb);
     } else {
-      security.compareToHash(passwordReset, user.passwordResetHash, function(err, isValid) {
+      safeguard.compareToHash(passwordReset, user.passwordResetHash, function(err, isValid) {
         if(err) {
           cb(err, user);
         } else if( ! isValid) {
@@ -731,9 +731,13 @@ module.exports = function(app, config, log) {
       } else {
 
         // Hash the password, store it, and save the user.
-        security.hasher(password, function(err, passwordHash) {
-          user.passwordHash = passwordHash;
-          user.save(cb);
+        safeguard.hasher(password, function(err, passwordHash) {
+          if(err) {
+            cb(err);
+          } else {
+            user.passwordHash = passwordHash;
+            user.save(cb);
+          }
         });
       }
     });
@@ -752,9 +756,13 @@ module.exports = function(app, config, log) {
     // TODO: Verify the password reset token is URL friendly.
 
     // Hash the password, store it, and save the user.
-    security.hasher(token, function(err, passwordResetHash) {
-      user.passwordResetHash = passwordResetHash;
-      user.save(cb);
+    safeguard.hasher(token, function(err, passwordResetHash) {
+      if(err) {
+        cb(err);
+      } else {
+        user.passwordResetHash = passwordResetHash;
+        user.save(cb);
+      }
     });
   };
 
@@ -777,9 +785,13 @@ module.exports = function(app, config, log) {
         securityAnswer = securityAnswer.toLowerCase().trim();
 
         // Hash the password, store it, and save the user.
-        security.hasher(securityAnswer, function(err, securityAnswerHash) {
-          user.securityAnswerHash = securityAnswerHash;
-          user.save(cb);
+        safeguard.hasher(securityAnswer, function(err, securityAnswerHash) {
+          if(err) {
+            cb(err);
+          } else {
+            user.securityAnswerHash = securityAnswerHash;
+            user.save(cb);
+          }
         });
       }
     });

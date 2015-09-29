@@ -6,82 +6,87 @@ var assert = require('assert'),
     session = require('express-session'),
     _ = require('lodash');
 
-var app,
-    config,
-    log,
-    mocha;
+var mocha;
 
-var FixtureAdapter = require('./fixtureAdapter.js');
+var FixtureAdapter = require('./fixtureAdapter.js'),
+  DatabaseAdapter = require('./databaseAdapter.js'),
+  MongooseAdapter = require('./mongooseAdapter.js');
+
+var adapterName = 'Mongoose';
 
 /* ************************************************************ *
  * ******************** Constructor
  * ************************************************************ */
 
-DataManager = function(_app, _config, _log) {
-  app = _app;
-  config = _config;
-  log = _log;
+DataManager = function(app, config, log) {
+  this.app = app;
+  this.config = config;
+  this.log = log;
+
+  this.setDatabaseAdapter();
 };
 
-
-/* ************************************************************ *
- * ******************** Validation Methods.
- * ************************************************************ */
-
-var validateBadRequestObject = function(data, locale) {
-  validateErrorObject(data);
-  assert.equal(data.error.message, i18n.t(locale ||'server.error.badRequest') || locale);
+DataManager.prototype.setDatabaseAdapter = function() {
+  this.databaseAdapter = MongooseAdapter(this);
 };
 
-var validateNotFoundObject = function(data, locale) {
-  validateErrorObject(data);
-  assert.equal(data.error.message, i18n.t(locale ||'server.error.notFound') || locale);
-};
+DataManager.prototype.load = function(data, cb) {
+  var tasks = [];
 
-var validateUnauthorized = function(data, locale) {
-  validateErrorObject(data);
-  assert.equal(data.error.message, i18n.t(locale ||'server.error.unauthorized') || locale);
-};
-
-var validateForbiddenObject = function(data, locale) {
-  validateErrorObject(data);
-  assert.equal(data.error.message, i18n.t(locale ||'server.error.forbidden') || locale);
-};
-
-var validateErrorObject = function(data, locale) {
-  // Make sure the error object is valid.
-  assert.notEqual(data.error, undefined);
-  assert.notEqual(data.error, null);
-  assert.equal(_.isObject(data.error), true);
-
-  // Make sure message is available and valid.
-  assert.notEqual(data.error.message, null);
-  assert.notEqual(data.error.message, undefined);
-  assert.equal(_.isString(data.error.message), true);
-
-  if(config.debug) {
-    assert.notEqual(data.error.stack, undefined);
-    assert.notEqual(data.error.stack, undefined);
-    assert.equal(_.isString(data.error.stack), true);
+  for(var key in data) {
+    if(data.hasOwnProperty(key)) {
+      tasks.push(this.createInsertDataMethod(data[key], key));
+    }
   }
 
-  if(locale) {
-    assert.equal(data.error.message, i18n.t(locale) || locale);
-  }
-};
-
-var validateResponseObject = function(data) {
-  // Check for an error object
-  if((data.response == undefined || data.response == null) && (data.error == undefined || data.error == null)) {
-    if(data.error == undefined) {
-      log.e("Invalid response: %s", JSON.stringify(data));
-      throw new Error("Either response or error must be defined.");
+  async.parallel(tasks, function(err, results) {
+    if(err) {
+      cb(err);
     } else {
-      validateErrorObject(data);
+      cb();
+    }
+  });
+};
+
+DataManager.prototype.createInsertDataMethod = function(data, key) {
+  var dm = this;
+  return function(cb) {
+    if(data.insertAll !== undefined) {
+      data.insertAll(cb);
+    } else {
+      dm.log.w("Data object %s does not have a insertAll() method.", key);
     }
   }
 };
 
+DataManager.prototype.unload = function(data, cb) {
+  var tasks = [];
+
+  for(var key in data) {
+    if(data.hasOwnProperty(key)) {
+      tasks.push(this.createDeleteDataMethod(data[key], key));
+    }
+  }
+
+  async.parallel(tasks, function(err, results) {
+    if(err) {
+      cb(err);
+    } else {
+      cb();
+    }
+  });
+};
+
+DataManager.prototype.createDeleteDataMethod = function(data, key) {
+  var dm = this;
+  return function(cb) {
+    if(data.deleteAll !== undefined) {
+      data.deleteAll(cb);
+    } else {
+      dm.log.w("Data object %s does not have a deleteAll() method.", key);
+    }
+  }
+};
 
 
 /* ************************************************************ *
@@ -153,252 +158,6 @@ var getAccessToken = function(data, roleIndex, cb) {
   cb();
 };
 
-/* ************************************************************ *
- * ******************** Handle Data
- * ************************************************************ */
-
-var addData = function(data, cb) {
-  var tasks = [];
-
-  for(var key in data) {
-    if(data.hasOwnProperty(key)) {
-      tasks.push(createAddDataMethod(data[key], key));
-    }
-  }
-
-  async.parallel(tasks, function(err, results) {
-    if(err) {
-      cb(err);
-    } else {
-      cb();
-    }
-  });
-};
-
-var createAddDataMethod = function(data, key) {
-  return function(cb) {
-    if(data.insertAll !== undefined) {
-      data.insertAll(cb);
-    } else {
-      log.w("Data object %s does not have a insertAll() method.", key);
-    }
-  }
-};
-
-var removeData = function(data, cb) {
-  var tasks = [];
-
-  for(var key in data) {
-    if(data.hasOwnProperty(key)) {
-      tasks.push(createRemoveDataMethod(data[key], key));
-    }
-  }
-
-  async.parallel(tasks, function(err, results) {
-    if(err) {
-      cb(err);
-    } else {
-      cb();
-    }
-  });
-};
-
-var createRemoveDataMethod = function(data, key) {
-  return function(cb) {
-    if(data.deleteAll !== undefined) {
-      data.deleteAll(cb);
-    } else {
-      log.w("Data object %s does not have a deleteAll() method.", key);
-    }
-  }
-};
-
-
- /* ************************************************************ *
- * ******************** Add Item(s) to the Database
- * ************************************************************ */
-
-var addItem = function addItem(modelName, obj, cb) {
-  var Model = mongoose.model(modelName);
-  new Model(obj).save(function(err, newObj) {
-    if(err) {
-      cb(err);
-    } else {
-      //log.t("Added %s with id.", modelName, newObj._id);
-      cb(undefined, newObj);
-    }
-  });
-};
-
-var addItemMethod = function addItemMethod(modelName, obj) {
-  return function(cb) {
-    var Model = mongoose.model(modelName);
-    new Model(obj).save(function(err, newObj) {
-      if(err) {
-        return cb(err);
-      }
-
-      //log.t("Added %s with id.", modelName, newObj._id);
-      cb();
-    });
-  }
-};
-
-var addItems = function addItems(modelName, items, cb) {
-  async.each(items, function (item, next) {
-    addItem(modelName, item, next);
-  }, cb);
-};
-
-var addItemsMethod = function addItemsMethod(modelName, items) {
-  return function(cb) {
-    async.each(items, function (item, next) {
-      addItem(modelName, item, next);
-    }, cb);
-  }
-};
-
-
-/* ************************************************************ *
- * ******************** Remove Items from Database
- * ************************************************************ */
-
-
-var removeItem = function(schemaName, id, cb) {
-  removeItemById(schemaName, id, cb);
-};
-
-var removeItemById = function(schemaName, id, cb) {
-  var Schema = mongoose.model(schemaName);
-
-  Schema.findOne({ "_id" : id}, function (err, data) {
-    if (err) {
-      cb(err);
-    } else {
-      if (data === undefined || data === null) {
-        //log.t("Schema %s with item id %s already removed.", schemaName, id);
-        cb();
-      } else {
-        data.remove(function(err, removedData) {
-          if(err) {
-            return cb(err);
-          }
-
-          //log.t("Schema %s with item id %s removed.", schemaName, data._id);
-          cb();
-        });
-      }
-    }
-  });
-};
-
-
-var removeItemMethod = function(schemaName, obj) {
-  return removeItemByIdMethod(schemaName, obj._id);
-};
-
-var removeItemByIdMethod = function(schemaName, id) {
-  return function (cb) {
-    var Schema = mongoose.model(schemaName);
-
-    Schema.findOne({ "_id" : id}, function (err, data) {
-      if (err) {
-        cb(err);
-      } else {
-        if (data === undefined || data === null) {
-          //log.t("Schema %s with item id %s already removed.", schemaName, id);
-        } else {
-          //log.t("Schema %s with item id %s removed.", schemaName, data._id);
-        }
-
-        cb();
-      }
-    });
-  };
-};
-
-var removeItems = function(schemaName, objs, cb) {
-  var ids = [];
-  for(var i = 0; i < objs.length; i++) {
-    ids.push(objs[i]._id);
-  }
-  removeItemsById(schemaName, ids, cb);
-};
-
-var removeItemsById = function(schemaName, ids, cb) {
-  async.each(ids, function (id, next) {
-    removeItem(schemaName, id, next)
-  }, cb);
-};
-
-var removeItemsMethod = function(schemaName, objs) {
-  var ids = [];
-  for(var i = 0; i < objs.length; i++) {
-    ids.push(objs[i]._id);
-  }
-  return removeItemsByIdMethod(schemaName, ids);
-};
-
-var removeItemsByIdMethod = function(schemaName, ids) {
-  return function (cb) {
-    async.each(ids, function (id, next) {
-      removeItemById(schemaName, id, next)
-    }, cb);
-  }
-};
-
-
-/* ************************************************************ *
- * ******************** Drop Collections from Database
- * ************************************************************ */
-
-/**
- * Remove all data in a specified collection from the currently
- * connected database.
- */
-function dropCollectionByName(schema) {
-  return function(cb) {
-    if( schema === undefined || schema === null) {
-      return cb("Cannot drop a collection with an invalid name of " + schema);
-    }
-
-    schema = schema.toLowerCase();
-
-    if(db.connection.collections[schema] === undefined || db.connection.collections[schema] === null) {
-      return cb("Cannot drop the " + schema + " collection because it does not exist");
-    }
-
-    db.connection.collections[schema].drop(function(err) {
-      if(err) {
-        if(err.message !== undefined && err.message.indexOf("ns not found") > -1) {
-          cb(undefined, schema + " collection does not need to be dropped because it has not yet been initialized.");
-        } else {
-          cb(err);
-        }
-      } else {
-        //log.t("Dropped the %s collection", schema);
-        cb(undefined, "Dropped the " + schema + " collection.");
-      }
-    });
-  }
-}
-
-function dropAllCollections(cb) {
-  var methods = [];
-
-  // Create the list of tasks to be performed in parallel.
-  for(var key in mongoose.connection.collections) {
-    if(mongoose.connection.collections.hasOwnProperty(key)) {
-      methods.push(dropCollectionByName(key));
-    }
-  }
-
-  // Execute the tasks in parallel, removing the access tokens.
-  async.parallel(methods, function (err, results) {
-    cb(err, results);
-  });
-}
-
 var inherit = function(proto) {
   function F() {}
   F.prototype = proto;
@@ -438,34 +197,8 @@ DataManager.prototype.tearDown = function (cb) {
 
 DataManager.prototype.getLoginCookie = getLoginCookie;
 
-DataManager.prototype.addItem = addItem;
-DataManager.prototype.addItemMethod = addItemMethod;
-DataManager.prototype.addItems = addItems;
-DataManager.prototype.addItemsMethod = addItemsMethod;
 
-DataManager.prototype.removeItem = removeItem;
-DataManager.prototype.removeItems = removeItems;
-DataManager.prototype.removeItemMethod = removeItemMethod;
-DataManager.prototype.removeItemsMethod = removeItemsMethod;
-
-DataManager.prototype.removeItemById = removeItemById;
-DataManager.prototype.removeItemsById = removeItemsById;
-DataManager.prototype.removeItemByIdMethod = removeItemByIdMethod;
-DataManager.prototype.removeItemsByIdMethod = removeItemsByIdMethod;
-
-DataManager.prototype.addData = addData;
-DataManager.prototype.removeData = removeData;
-
-DataManager.prototype.getAccessToken = getAccessToken;
-DataManager.prototype.getUserAccessToken = getUserAccessToken;
-
-DataManager.prototype.validateResponseObject = validateResponseObject;
-DataManager.prototype.validateUnauthorized = validateUnauthorized;
-DataManager.prototype.validateForbiddenObject = validateForbiddenObject;
-DataManager.prototype.validateErrorObject = validateErrorObject;
-DataManager.prototype.validateNotFoundObject = validateNotFoundObject;
-DataManager.prototype.validateBadRequestObject = validateBadRequestObject;
-
+DataManager.prototype.DatabaseAdapter = DatabaseAdapter;
 DataManager.prototype.FixtureAdapter = FixtureAdapter;
 DataManager.prototype.inherit = inherit;
 

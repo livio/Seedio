@@ -33,6 +33,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
     "passport-oauth2-client-password": "^0.1.2",
+    "safeguard": "0.0.1",
     "seedio-log": "git+https://github.com/livio/seedio-log.git#HEAD",
     "seedio-recaptcha": "git+https://github.com/livio/seedio-recaptcha.git#HEAD",
     "seedio-response": "git+https://github.com/livio/seedio-response.git#HEAD",
