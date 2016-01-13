@@ -1,6 +1,10 @@
 /**
- * The configuration object stores default settings and methods
- * used to govern the application.
+ * The configuration object stores default settings
+ * used to govern how the application will run.
+ * Existing settings can overridden or additional
+ * settings can be added when running the application
+ * in different environment modes using the other files
+ * located in the config folder.
  */
 
 
@@ -17,16 +21,21 @@ var path = require('path');
 
 var Config = function() {
 
-  // Information about the administrator of the server.
-  this.admin = {
-    email: ""                   // Email address used for notifications.
-  };
+  // Information about the administrator(s) of the
+  // server used for notifications or future functionality.
+  this.admins = [
+    {
+      email: "",                  // Email address used for notifications.
+      name: "Administrator"       // Name of the administrator
+    }
+  ];
 
+  // Specific settings to configure a model and its methods.
   this.models = {
     user: {
       failedSecurityAttempts: {
-        deactivate: 10,           // Number of failed attempts until the user account is deactivated.
-        recaptchaRequired: 5      // Number of failed attempts until a ReCAPTCHA is required for security requests.
+        deactivate: 10,           // Number of failed security attempts until the user account is deactivated.
+        recaptchaRequired: 5      // Number of failed security attempts until a ReCAPTCHA is required for security related requests.
       },
       password: {
         changeRequiresCurrentPassword: false, // Whether or not the current user's password is required to set a new password.
@@ -129,7 +138,7 @@ var Config = function() {
   this.server = {
     debug: false,               // Indicates the server is in debug mode and may perform unusual actions to assist the developer.
     domain: 'myDomainName.com', // Server's domain name.
-    name: "SEEDIO",              // Name of the server
+    name: "SEEDIO",             // Name of the server
     port: 3000,                 // Port the server will be listening on.
     protocol: 'https'           // Default protocol used to communicate with the server.
   };
@@ -142,21 +151,21 @@ var Config = function() {
     proxy: false,               // Should be true in production when secured behind NGINX and over HTTPS
     saveUninitialized: true,
     cookie: {
-      maxAge: 604800000,    // 1 week (in ms)
-      ttl:    7776000,      // 3 months (in seconds)
-      secure: false         // Should be true in production when secured behind NGINX and over HTTPS
+      maxAge: 604800000,        // 1 week (in ms)
+      ttl:    7776000,          // 3 months (in seconds)
+      secure: false             // Should be true in production when secured behind NGINX and over HTTPS
     }
   };
 
-  this.models = {
-    user: {
-      usernameMaxLength: 600
-    }
-  };
 
-  // Override configurations by loading the configuration file that
-  // matches the name of the node environment specified.  If an
-  // environment is not specified, Default to local.
+  /* ************************************************** *
+   * ******************** Environment Settings
+   * ************************************************** */
+
+  // Override configurations by loading the configuration
+  // file that matches the name of the node environment
+  // specified.  If an environment is not specified,
+  // defaults to local.
   var file = (process.env.NODE_ENV) ? process.env.NODE_ENV : "local.js";
   try {
     (require(__dirname + "/" + file))(this);
