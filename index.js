@@ -54,11 +54,11 @@ app.use(i18n.handle);
 
 // TODO: Set-up Views engines
 app.set('view engine', null);
-//app.set('views','../client/views');
+//app.set('views','./client/views');
 //app.set('view engine', 'jade');
 
 // Make public folder static so it can be served
-app.use(express.static('../client/public', config.express.static));
+app.use(express.static('./client/public', config.express.static));
 
 // Extend express response object.
 app.use(responseHandler.addSetMethods);

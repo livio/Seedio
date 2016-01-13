@@ -77,7 +77,7 @@ var Config = function() {
         "pass": ''              // Password.
       }
     },
-    templatesDirectory: path.resolve('../client/emailTemplates')  // Directory where email templates are stored.
+    templatesDirectory: path.resolve('./client/emailTemplates')  // Directory where email templates are stored.
   };
 
   // Configure the Express framework:  http://expressjs.com/
@@ -113,7 +113,7 @@ var Config = function() {
 
   // Resolves to the path of the application's root directory.
   //this.rootDirectory = path.resolve(path.dirname(require.main.filename), '..');
-  this.rootDirectory = path.resolve(__dirname, "../../");
+  this.rootDirectory = path.resolve(__dirname, "../");
 
   // Safeguard library settings https://goo.gl/kYg9Nv
   this.safeguard = {
@@ -129,7 +129,7 @@ var Config = function() {
   this.server = {
     debug: false,               // Indicates the server is in debug mode and may perform unusual actions to assist the developer.
     domain: 'myDomainName.com', // Server's domain name.
-    name: "SHAID",              // Name of the server
+    name: "SEEDIO",              // Name of the server
     port: 3000,                 // Port the server will be listening on.
     protocol: 'https'           // Default protocol used to communicate with the server.
   };
@@ -170,7 +170,7 @@ var Config = function() {
 
   this.log.debug = this.server.debug;
 
-  this.libsDirectory = path.normalize(this.rootDirectory+'/server/libs/') ;
+  this.libsDirectory = path.normalize(this.rootDirectory+'/libs/') ;
 
 };
 
