@@ -1,12 +1,13 @@
-module.exports = function(app, config, log, data, dm) {
+module.exports = function(app, config, log, fixtures) {
 
   var assert = require('assert'),
     async = require('async'),
+    cramit = require('cramit')(),
     i18n = require('i18next'),
     should = require('should'),
     _ = require('lodash');
 
-  var db = dm.databaseAdapter;
+  //var db = dm.databaseAdapter;
 
 
   /* ************************************************** *
@@ -85,10 +86,11 @@ module.exports = function(app, config, log, data, dm) {
         } else {
           var responseObj = res.body;
 
-          dm.validateResponseObject(responseObj);
+          // TODO:
+          //dm.validateResponseObject(responseObj);
 
           // Make sure all the SDL servers were returned for an admin.
-          assert.equal(responseObj.response.length, data.User.getAll().length);
+          assert.equal(responseObj.response.length, fixtures.User.getAll().length);
 
           validateUsers(responseObj.response, adminRole, undefined, function(err) {
             done(err);
@@ -117,11 +119,11 @@ module.exports = function(app, config, log, data, dm) {
     });
 
     beforeEach(function(done) {
-      dm.load(data, done);
+      cramit.upsertFixtureData(fixtures, done);
     });
 
     afterEach(function(done) {
-      dm.unload(data, done);
+      cramit.removeFixtureData(fixtures, done);
     });
 
 

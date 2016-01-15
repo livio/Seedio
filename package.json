@@ -19,6 +19,7 @@
     "compression": "^1.4.1",
     "connect-ensure-login": "^0.1.1",
     "connect-mongo": "^0.8.0",
+    "cramit": "git+https://github.com/ssmereka/cramit.git#HEAD",
     "crave": "git+https://github.com/ssmereka/crave.git#HEAD",
     "crucial": "git+https://github.com/ssmereka/crucial.git#HEAD",
     "express": "^4.10.1",

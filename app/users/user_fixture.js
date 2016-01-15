@@ -1,10 +1,10 @@
-module.exports = function(app, config, log, dm) {
+module.exports = function(cramit, options) {
 
   function UserFixture() {
-    dm.FixtureAdapter.call(this, 'User', dm, config, log);
+    cramit.fixtureSuper(this, 'User');
   }
 
-  UserFixture.prototype = dm.inherit(dm.FixtureAdapter.prototype);
+  UserFixture.prototype = cramit.fixturePrototype();
 
   UserFixture.prototype.getNew = function() {
     var now = Date.now();
@@ -66,7 +66,7 @@ module.exports = function(app, config, log, dm) {
         "password": "password",
         "securityQuestion": "What is your favorite color",
         "securityAnswer": "I'm Blind"
-      },
+      }
     ];
   };
 

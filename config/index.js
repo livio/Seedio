@@ -50,6 +50,13 @@ var Config = function() {
     }
   };
 
+  // Cramit is a module used to add or remove data in the database for testing or initialization.
+  this.cramit = {
+    database: {
+      type: 'mongoose'
+    }
+  };
+
   // Crave is a module used to find and require files dynamically:  https://github.com/ssmereka/crave
   this.crave = {
     cache: {                    // Crave can store the list of files to load rather than create it each time.
@@ -181,6 +188,7 @@ var Config = function() {
 
   this.libsDirectory = path.normalize(this.rootDirectory+'/libs/') ;
 
+  this.cramit.database.connectionUri = this.database.uri;
 };
 
 
