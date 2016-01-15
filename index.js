@@ -9,13 +9,7 @@ var config = require("./config/"),
     i18n = require('i18next'),
     path = require('path');
 
-var log = new (require('./libs/log'))({
-      mongoose: mongoose,
-      debug: config.log.debug,
-      trace: config.log.trace,
-      error: config.log.error,
-      name: config.server.name,
-      databaseLog: config.server.databaseLog}),
+var log = new (require('./libs/log'))(config.log),
     database = new (require('./libs/database/'))(config, log),
     oauth2 = new (require('./libs/oauth2/'))(config, log),
     responseHandler = new (require('seedio-response'))(config, log),
