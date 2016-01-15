@@ -42,7 +42,7 @@ module.exports = function(app, config, log) {
     try {
       text = crypto.randomBytes(length);
     } catch(err) {
-      log.e(err);
+      log.error(err);
       text = uuid.v4();
     }
 

@@ -709,7 +709,7 @@ module.exports = function(app, config, log) {
     } else {
       return function(err) {
         if(err) {
-          log.e(err);
+          log.error(err);
         }
       };
     }

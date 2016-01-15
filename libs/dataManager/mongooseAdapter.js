@@ -45,7 +45,7 @@ module.exports = function(dm, mongoose) {
       if(err) {
         cb(err);
       } else {
-        log.t("Added %s with id.", schemaName, newItem._id);
+        log.trace("Added %s with id.", schemaName, newItem._id);
         cb(undefined, newItem);
       }
     });
@@ -104,7 +104,7 @@ module.exports = function(dm, mongoose) {
         cb(err);
       } else {
         if (data === undefined || data === null) {
-          adapter.log.t("Schema %s with item id %s already removed.", schemaName, id);
+          adapter.log.trace("Schema %s with item id %s already removed.", schemaName, id);
           cb();
         } else {
           data.remove(function(err, removedData) {
@@ -112,7 +112,7 @@ module.exports = function(dm, mongoose) {
               return cb(err);
             }
 
-            adapter.log.t("Schema %s with item id %s removed.", schemaName, data._id);
+            adapter.log.trace("Schema %s with item id %s removed.", schemaName, data._id);
             cb();
           });
         }

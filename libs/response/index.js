@@ -22,7 +22,7 @@ Response.prototype.responseHandler = function(req, res, next) {
 
   if(isApiPath(req.path)) {
     if (!res || !res.locals || res.locals.data === undefined || res.locals.data === null) {
-      log.w('res.locals.data is not set. Assuming the endpoint was not handled and does not exist.');
+      log.warn('res.locals.data is not set. Assuming the endpoint was not handled and does not exist.');
       res.setError('API endpoint not found.', 404);
     } else {
       formatResponse(res.locals.data, req.user, req.accessToken, req.sanitizeOptions || {}, (res.locals.sanitizeData !== false), function(err, responseObject) {
@@ -47,7 +47,7 @@ Response.prototype.responseHandler = function(req, res, next) {
  */
 Response.prototype.errorHandler = function(err, req, res, next) {
   if( ! err.status || err.status == 500) {
-    log.e(err);
+    log.error(err);
   }
 
   if(isApiPath(req.path)) {
@@ -158,7 +158,7 @@ function formatResponseFlags(flags, obj) {
 
         default:
           // TODO: Currently unknown flags.
-          log.v("Unknown response flag: %s ", key);
+          log.debug("Unknown response flag: %s ", key);
           break;
       }
 

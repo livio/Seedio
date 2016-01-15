@@ -105,9 +105,9 @@ var Config = function() {
 
   // Configure i18n library used for language translation:  http://i18next.com/
   this.i18n = {
-    debug: false,                                 // Adds a bunch of debug text for i18next. Good to show if you are not sure why translations are failing.
-    resGetPath: '../locales/__lng__/__ns__.json', // Point to the translation files.
-    useCookie: false,                             // Do not use custom i18next cookie for language translation.
+    debug: false,                                               // Adds a bunch of debug text for i18next. Good to show if you are not sure why translations are failing.
+    resGetPath: path.resolve('../locales/__lng__/__ns__.json'), // Point to the translation files.
+    useCookie: false,                                           // Do not use custom i18next cookie for language translation.
     fallbackLng: 'dev'
   };
 

@@ -14,7 +14,7 @@ Database.prototype.connect = function(cb) {
 
   mongoose.connect(config.database.uri);
   mongoose.connection.on('error', function(err) {
-    log.e(err);
+    log.error(err);
   });
   mongoose.connection.once('open', function() {
     initializeDatabase(mongoose, function(err) {
@@ -32,7 +32,7 @@ var initializeDatabase = function(db, cb) {
   var dm = new (require(path.resolve('./libs/dataManager/')))(undefined, config, log);
   initializeUserRoles(db, dm, function(err) {
     if(err) {
-      log.e(err.stack);
+      log.error(err.stack);
     } else {
       initializeAdminUser(db, dm, cb);
     }
@@ -59,7 +59,7 @@ var initializeUserRoles = function(db, dm, cb) {
               cb(new Error("No user roles were added to the database."));
             } else {
               for(var i = userRoles.length-1; i >= 0; --i) {
-                log.i("%s user role was added to the database.", userRoles[i].name);
+                log.info("%s user role was added to the database.", userRoles[i].name);
               }
               cb();
             }
@@ -112,9 +112,9 @@ var initializeAdminUser = function(db, dm, cb) {
                     if(err) {
                       cb(err);
                     } else if ( ! success) {
-                      log.i("Admin with username %s was added to the database with password %s", admin.username, password);
+                      log.info("Admin with username %s was added to the database with password %s", admin.username, password);
                     } else {
-                      log.i("Admin with username %s was added to the database and the password was emailed.", admin.username);
+                      log.info("Admin with username %s was added to the database and the password was emailed.", admin.username);
                       cb();
                     }
                   });
@@ -141,7 +141,7 @@ var createRandomTextSync = function(length) {
   try {
     text = crypto.randomBytes(length || 256);
   } catch(err) {
-    log.e(err);
+    log.error(err);
     text = uuid.v4();
   }
 

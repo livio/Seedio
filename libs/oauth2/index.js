@@ -350,16 +350,16 @@ var setupPassport = function() {
   passport.use(new BearerStrategy({ passReqToCallback: true },function(req, token, next) {
     AccessToken.findOne({ token: token}).populate('user').exec(function(err, accessToken) {
       if(err) {
-        log.t('BearerStrategy(): Error occurred with token %s ', token);
-        log.t(err);
+        log.trace('BearerStrategy(): Error occurred with token %s ', token);
+        log.trace(err);
         next(err);
       } else if( ! accessToken) {
-        log.t('BearerStrategy(): Access token is not authorized: %s ', token);
+        log.trace('BearerStrategy(): Access token is not authorized: %s ', token);
         next(response.createUnauthorizedError(req), false);
       } else {
         User.populate(accessToken.user, { path: 'roles' }, function(err, user) {
           if( ! user.roles || user.roles.length == 0) {
-            log.t("BearerStrategy(): User %s does not have any roles: %s", user._id, JSON.stringify(user.roles, undefined,2));
+            log.trace("BearerStrategy(): User %s does not have any roles: %s", user._id, JSON.stringify(user.roles, undefined,2));
           }
           next(err, user, {scope: 'all'});
         });

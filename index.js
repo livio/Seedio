@@ -9,7 +9,7 @@ var config = require("./config/"),
     i18n = require('i18next'),
     path = require('path');
 
-var log = new (require('seedio-log'))({
+var log = new (require('./libs/log'))({
       mongoose: mongoose,
       debug: config.log.debug,
       trace: config.log.trace,
@@ -86,17 +86,18 @@ app.use(passport.session());
 // Method to connect to database and start the server.
 var start = function(err) {
   if(err) {
-    return log.e(err);
+    return log.error(err);
   }
 
   database.connect(function(err) {
     if(err) {
-      return log.e(err);
+      log.info('Failed to connect');
+      return log.error(err);
     }
 
     oauth2.createOauth2Server(app, config, log, function(err) {
-      if(err) {
-        return log.e(err);
+    if(err) {
+        return log.error(err);
       }
     });
 
@@ -116,7 +117,7 @@ var start = function(err) {
       var serverInfo = this.address();
       var address = (serverInfo.address === "0.0.0.0" || serverInfo.address === "::") ? "localhost" : serverInfo.address;
 
-      log.i("Listening on http://%s:%s with database %s", address, serverInfo.port, config.database.uri.replace(/mongodb:\/\/(.*:.*)@/ig, ''));
+      log.info("Listening on http://%s:%s with database %s", address, serverInfo.port, config.database.uri.replace(/mongodb:\/\/(.*:.*)@/ig, ''));
     });
   });
 };

@@ -54,7 +54,7 @@ DataManager.prototype.createInsertDataMethod = function(data, key) {
     if(data.insertAll !== undefined) {
       data.insertAll(cb);
     } else {
-      dm.log.w("Data object %s does not have a insertAll() method.", key);
+      dm.log.warn("Data object %s does not have a insertAll() method.", key);
     }
   }
 };
@@ -83,7 +83,7 @@ DataManager.prototype.createDeleteDataMethod = function(data, key) {
     if(data.deleteAll !== undefined) {
       data.deleteAll(cb);
     } else {
-      dm.log.w("Data object %s does not have a deleteAll() method.", key);
+      dm.log.warn("Data object %s does not have a deleteAll() method.", key);
     }
   }
 };
