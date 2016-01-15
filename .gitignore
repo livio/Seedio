@@ -7,6 +7,10 @@ npm-debug.log
 # Webstorm files
 .idea
 
+# Visual studio code files
+typings
+.vscode
+
 # Mac OS files
 .DS_Store
 
