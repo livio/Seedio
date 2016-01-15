@@ -5,7 +5,6 @@ var config = require("./config/"),
     passport = require('passport'),
     session = require('express-session'),
     bodyParser = require('body-parser'),
-    mongoose = require('mongoose'),
     i18n = require('i18next'),
     path = require('path');
 
@@ -29,7 +28,7 @@ if(config.session.cookie.secure && config.session.proxy) {
 // Disable the "X-Powered-By: Express" HTTP header, which is enabled by default.
 app.disable("x-powered-by");
 
-// Log all incoming requests.
+// Log all incoming requests, if enabled in config.
 if(config.server.requests) {
   app.use(log.requestLogger());
 }
@@ -65,6 +64,7 @@ app.use(session({
   name: config.session.name,
   secret: config.session.secret,
   cookie: {
+    maxAge: config.session.maxAge,
     secure: config.session.cookie.secure
   },
   resave: config.session.resave,

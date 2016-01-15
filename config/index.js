@@ -155,16 +155,16 @@ var Config = function() {
 
   // Configure express session options.
   this.session = {
-    name: 'seedio.sid',         // Name of the server in the express session.
-    secret: 'You will arrive at the gates of Valhalla, shiny and chrome!',
-    resave: true,
-    proxy: false,               // Should be true in production when secured behind NGINX and over HTTPS
-    saveUninitialized: true,
     cookie: {
       maxAge: 604800000,        // 1 week (in ms)
       ttl:    7776000,          // 3 months (in seconds)
       secure: false             // Should be true in production when secured behind NGINX and over HTTPS
-    }
+    },
+    name: 'seedio.sid',         // Name of the server in the express session.
+    proxy: false,               // Should be true in production when secured behind NGINX and over HTTPS
+    resave: true,
+    saveUninitialized: true,
+    secret: 'You will arrive at the gates of Valhalla, shiny and chrome!'
   };
 
 
