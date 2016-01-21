@@ -1,12 +1,13 @@
 var util = require('util'),
     bunyan = require('bunyan'),
-    MongoStream = require('./libs/mongoStream'),
-    PrettySteam = require('./libs/prettyStream');
+    MongoStream = require('bunyan-mongo-stream'),
+    PrettySteam = require('bunyan-pretty-stream');
 
 var Log = function (options) {
   if(!options) { options = {} }
 
   this.name = getDefaultValue(options.name, 'Log');
+  
   this.databaseLog = getDefaultValue(options.databaseLog, false);
 
   // Define bunyan logging streams. https://github.com/trentm/node-bunyan#streams
