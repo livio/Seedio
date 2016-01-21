@@ -30,7 +30,7 @@ var Config = function() {
     }
   ];
 
-  // Specific settings to configure a model and its methods.
+  // Specific settings to configure each model and its methods.
   this.models = {
     user: {
       failedSecurityAttempts: {
@@ -50,10 +50,10 @@ var Config = function() {
     }
   };
 
-  // Cramit is a module used to add or remove data in the database for testing or initialization.
+  // Cramit is a module used to add or remove data in the database for testing or initialization.  https://github.com/ssmereka/cramit
   this.cramit = {
     database: {
-      type: 'mongoose'
+      type: 'mongoose'          // Type of database adapter to use.
     }
   };
 
@@ -111,9 +111,12 @@ var Config = function() {
     fallbackLng: 'dev'
   };
 
+  // Log is a module used to print and store log messages:  ?
   this.log = {
     error: true,
     debug: false,
+    mongoose: require('mongoose'),
+    name: undefined,  // This will automatically be set later in the config file.
     requests: false,
     trace: false
   };
@@ -152,16 +155,16 @@ var Config = function() {
 
   // Configure express session options.
   this.session = {
-    name: 'seedio.sid',         // Name of the server in the express session.
-    secret: 'You will arrive at the gates of Valhalla, shiny and chrome!',
-    resave: true,
-    proxy: false,               // Should be true in production when secured behind NGINX and over HTTPS
-    saveUninitialized: true,
     cookie: {
       maxAge: 604800000,        // 1 week (in ms)
       ttl:    7776000,          // 3 months (in seconds)
       secure: false             // Should be true in production when secured behind NGINX and over HTTPS
-    }
+    },
+    name: 'seedio.sid',         // Name of the server in the express session.
+    proxy: false,               // Should be true in production when secured behind NGINX and over HTTPS
+    resave: true,
+    saveUninitialized: true,
+    secret: 'You will arrive at the gates of Valhalla, shiny and chrome!'
   };
 
 
@@ -189,6 +192,9 @@ var Config = function() {
   this.libsDirectory = path.normalize(this.rootDirectory+'/libs/') ;
 
   this.cramit.database.connectionUri = this.database.uri;
+
+  // Set the log name to the server's name.
+  this.log.name = this.server.name;
 };
 
 

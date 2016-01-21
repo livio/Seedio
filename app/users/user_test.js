@@ -7,8 +7,6 @@ module.exports = function(app, config, log, fixtures) {
     should = require('should'),
     _ = require('lodash');
 
-  //var db = dm.databaseAdapter;
-
 
   /* ************************************************** *
    * ******************** Configurations
@@ -113,10 +111,6 @@ module.exports = function(app, config, log, fixtures) {
     /* ************************************************** *
      * ******************** Lifecycle Methods
      * ************************************************** */
-
-    before(function(done) {
-      done();
-    });
 
     beforeEach(function(done) {
       cramit.upsertFixtureData(fixtures, done);

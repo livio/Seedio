@@ -12,7 +12,7 @@
 module.exports = function(c) {
 
   // Connection URI for the database.
-  c.database.uri = "mongodb://localhost:27017/seedio";
+  c.database.uri = "mongodb://localhost:27017/seedio_local";
 
   // SMTP server's username and password.
   c.email.smtp.auth.user = '';
@@ -20,6 +20,12 @@ module.exports = function(c) {
 
   // Enable/Disable i18n library's debug setting.
   c.i18n.debug = false;
+
+  // Enable/Disable log levels.
+  c.log.error = true;
+  c.log.debug = true;
+  c.log.trace = false;
+  c.log.requests = false;
 
   // Credentials for Google's reCAPTCHA, used to protect against bots.
   c.recaptcha.clientKey = "";
@@ -35,4 +41,5 @@ module.exports = function(c) {
 
   // Set the secret used to secure the session.
   c.session.secret = 'You will arrive at the gates of Valhalla, shiny and chrome!';
+
 };

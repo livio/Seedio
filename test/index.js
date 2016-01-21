@@ -4,7 +4,7 @@ process.env.NODE_ENV = 'test';
 var app = require('../index.js'),
     config = require('../config/'),
     crave = require("crave"),
-    log = new (require('seedio-log'))(config),
+    log = new (require('seedio-log'))(config),//TODO: Match whatever index does.
     path = require("path"),
     supertest = require('supertest')(app);
 
@@ -28,37 +28,13 @@ describe('Seedio', function() {
   before(function(done) {
     this.timeout(0);
 
-    var loadModels = function(cb) {
-      // Configure Crave.
-      crave.setConfig({
-        error: true,
-        cache: {                    // Crave can store the list of files to load rather than create it each time.
-          enable: false             // Disable caching of the list of files to load.  In production this should be enabled.
-        },
-        identification: {           // Variables related to how to find and require files are stored here.
-          type: "filename",         // Determines how to find files.  Available options are: 'string', 'filename'
-          identifier: "_"           // Determines how to identify the files.
-        }
-      });
-
-      // Recursively load all files of the specified type(s) that are also located in the specified folder.
-      //crave.directory(applicationPath, [ "model" ], cb, app, config, log);
-      cb();
-    };
-
-    // Find all fixtures.
-    loadModels(function(err) {
+    cramit.findAllFixtures(applicationPath, {}, function(err, _fixtures) {
       if(err) {
-        return done(err);
+        done(err);
+      } else {
+        fixtures = _fixtures;
+        done();
       }
-      cramit.findAllFixtures(applicationPath, {}, function(err, _fixtures) {
-        if(err) {
-          done(err);
-        } else {
-          fixtures = _fixtures;
-          done();
-        }
-      });
     });
   });
 
